@@ -12,44 +12,59 @@ public class ForwardSearchAttackEightCharPassword{
 //    private static List<Character> characterList = new ArrayList<Character>(Arrays.asList("q","w","n","i","+","5","8","0"));
 
 
+
     public static void main (String[] args) throws IOException {
-        makePass("",8);
+        String whatisit = makePass();
     }
 
 
     private static List<String> characterList = new LinkedList<String>(Arrays.asList("q","w","n","i","+","5","8","0"));
     int k = 3;
-    static int d = 0;
+    static int counter = 0;
     private Map<String, String> shaKeyValues = new HashMap<String, String>();
+    static String partialString = "";
 
-    public static void makePass(String partialString, int iterator) throws IOException {
-        if(iterator == 0) {
-            writeToFile(partialString);
+    public static String makePass() throws IOException {
+        if (counter == 3) {
+            writeToFile();
+
         }
         else {
-            for (int i =0; i < 8; i++) {
-                if (d == 2000) {
-                    break;
-                }
-                partialString +=characterList.get(i);
+            counter++;
+            for (int i = 0; i < 3; i++) {
+                partialString = partialString + makePass();
+            }
+        }
+        return partialString;
+    }
 
-                makePass( partialString, iterator-1 );
-                d++;
+    public static void makePass2() throws IOException {
+        if(counter == 3) {
+            writeToFile();
+        }
+        else {
+            for (int i = 0; i < 3; i++) {
+                partialString += characterList.get(i);
+                counter++;
+                makePass2();
+
             }
         }
     }
 
-    public static void writeToFile(String textToFile) throws IOException {
+    public static void writeToFile() throws IOException {
 
 
         File file = new File("data/testoutput.txt");
         FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
         BufferedWriter writer = new BufferedWriter(fileWriter);
 
-        writer.write(textToFile);
+        writer.write(partialString);
         writer.newLine();
-        System.out.println(d);
         writer.close();
+        counter = 0;
+        partialString = "";
+
     }
 
     public void doLoop() {
